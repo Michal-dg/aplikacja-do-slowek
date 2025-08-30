@@ -9,19 +9,20 @@ if (-not (Test-Path ".git")) {
     Write-Host "Zainicjowano nowe repozytorium Git."
 }
 
-# 3. Sprawdź, czy zdalne repozytorium 'origin' już istnieje
+# 3. Sprawdź, czy zdalne repozytorium 'origin' już istnieje. Jeśli tak, usuń je.
 $remoteExists = git remote | Where-Object { $_ -eq 'origin' }
-
 if ($remoteExists) {
-    Write-Host "Zdalne repozytorium 'origin' już istnieje. Pomijam dodawanie."
-} else {
-    git remote add origin $repoUrl
-    Write-Host "Dodano zdalne repozytorium 'origin'."
+    Write-Host "Znaleziono istniejące repozytorium 'origin'. Usuwam je, aby uniknąć błędów..." -ForegroundColor Yellow
+    git remote remove origin
 }
 
-# 4. Wykonaj pozostałe komendy Git
+# 4. Dodaj poprawne zdalne repozytorium
+Write-Host "Dodaję poprawne zdalne repozytorium 'origin'."
+git remote add origin $repoUrl
+
+# 5. Wykonaj pozostałe komendy Git
 git add .
-git commit -m "Aktualizacja aplikacji"
+git commit -m "Aktualizacja aplikacji i poprawa skryptu wdrożeniowego"
 git branch -M main
 git push -u origin main
 
